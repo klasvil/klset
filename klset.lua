@@ -29,8 +29,8 @@ local main_window_state = imgui.ImBool(false)
 local sec_window_state = imgui.ImBool(false)
 local sec = imgui.ImBool(true)
 
-local script_vers = 2
-local script_vers_text = "2.00"
+local script_vers = 3
+local script_vers_text = "3.00"
 
 local update_url = "https://raw.githubusercontent.com/klasvil/klset/main/update.ini"
 local update_path = getWorkingDirectory() .."/update.ini"
