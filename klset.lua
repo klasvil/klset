@@ -35,7 +35,7 @@ local script_vers_text = "3.00"
 local update_url = "https://raw.githubusercontent.com/klasvil/klset/main/update.ini"
 local update_path = getWorkingDirectory() .."/update.ini"
 
-local script_url = ""
+local script_url = "https://raw.githubusercontent.com/klasvil/klset/main/klset.lua"
 local script_path = thisScript().path
 
 
