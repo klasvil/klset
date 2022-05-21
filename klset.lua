@@ -15,6 +15,7 @@ local key = require 'vkeys'
  
 
 update_state = false
+activiti = true
 index = 1
 lock = false
 idplayer = {}
@@ -29,8 +30,8 @@ local main_window_state = imgui.ImBool(false)
 local sec_window_state = imgui.ImBool(false)
 local sec = imgui.ImBool(true)
 
-local script_vers = 4
-local script_vers_text = "3.01"
+local script_vers = 5
+local script_vers_text = "3.21"
 
 local update_url = "https://raw.githubusercontent.com/klasvil/klset/main/update.ini"
 local update_path = getWorkingDirectory() .."/update.ini"
@@ -63,7 +64,7 @@ function main()
     
     sampAddChatMessage(u8:decode('{00AAFF}[KlSet]{FFFFFF} - Для поиска нарушителей аксесуаров пропишите команду {00AAFF}/skillsall '), -1)
     sampAddChatMessage(u8:decode('{00AAFF}[KlSet]{FFFFFF} - Для поиска нарушителей Ранга(бандиты) {00AAFF}/checkall{FFFFFF} '), -1)
-    sampAddChatMessage(u8:decode('{00AAFF}[KlSet]{FFFFFF} - Если вы забыли команду {00AAFF}/allhelp{FFFFFF} '), -1)
+    sampAddChatMessage(u8:decode('{00AAFF}[KlSet]{FFFFFF} - Если вы забыли команды {00AAFF}/allhelp{FFFFFF} '), -1)
 
 
     sampRegisterChatCommand("allhelp", function()
@@ -71,10 +72,13 @@ function main()
         sampAddChatMessage('', -1)
         sampAddChatMessage(u8:decode('Для поиска нарушителей аксесуаров пропишите команду /skillsall '), -1)
         sampAddChatMessage(u8:decode('Для поиска нарушителей Ранга(бандиты) /checkall '), -1)
+        sampAddChatMessage(u8:decode('Для выключения активации меню на "X" /alloff '), -1)
+        sampAddChatMessage(u8:decode('Для включения активации меню на "X" /allon '), -1)
     end)
 
 
-    
+    sampRegisterChatCommand("alloff", alloff)
+    sampRegisterChatCommand("allon", allon)
     sampRegisterChatCommand("skillsall", skillsall)
     sampRegisterChatCommand("checkall", checkall)
     sampRegisterChatCommand("list", list)
@@ -84,12 +88,13 @@ function main()
         wait(0)
       
 
-        
-        if wasKeyPressed(key.VK_X) then -- активация по нажатию клавиши X
-            main_window_state.v = not main_window_state.v -- переключаем статус активности окна, не забываем про .v
-            imgui.Process = main_window_state.v
-        end
-           
+        if activiti then
+            if wasKeyPressed(key.VK_X) then -- активация по нажатию клавиши X
+                main_window_state.v = not main_window_state.v -- переключаем статус активности окна, не забываем про .v
+                imgui.Process = main_window_state.v
+            end
+        end 
+
         if update_state then
 
             downloadUrlToFile(script_url, script_path, function(id,status )
@@ -156,7 +161,13 @@ function skillsall()
                 index = index + 1
         end
     end
-        
+    
+    if #idplayer == 1 then 
+
+        return
+
+    end
+    wait(300)    
     for i = 1, #idplayer do
             sampSendChat('/checkskills '..idplayer[i]..' 3')
             tt[i] = sampGetDialogText()
@@ -179,7 +190,7 @@ function skillsall()
 
               
                    
-            print(sampGetPlayerNickname(idplayer[i])..'['..idplayer[i]..']')
+           -- print(sampGetPlayerNickname(idplayer[i])..'['..idplayer[i]..']')
            
                 for s in e:gmatch("[^\r\n]+") do
                    if index ~= 0 then
@@ -223,13 +234,13 @@ function skillsall()
                if index ~= 0 then
                
                 result = string.match(s, "[(]%w+")
-                print(s)
-                print(result)
+               
+                
                 if result == nil then
                 
                     else
                     if result ~= nil then
-                        print('+')
+                       
                     warn[i] = idplayer[i]
                     
                     end
@@ -240,11 +251,11 @@ function skillsall()
         end
         id = id + 1 
         end
-       -- print('-----------------------------')
+      
 
         ii = 1
         for i = 1, #idplayer do
-            --print(warn[i])
+            
             
                 if warn[i] == nil then
                     
@@ -253,7 +264,7 @@ function skillsall()
                            dialogArr[ii] = warn[i]
                            ii = ii + 1
                         end
-                            --print(dialogArr[i])
+                            
                         
                             
                             
@@ -280,14 +291,19 @@ function checkall()
                index = index + 1
            end
        end 
-       sampAddChatMessage(r)
+      
+        if #idplayer == 1 then 
 
+         return
+
+        end
+        wait(300) 
         for i = 1, #idplayer do
             sampSendChat('/check '..idplayer[i])
             check[i] = sampGetDialogText()
             wait(350) 
         end
-        id = 2
+            id = 2
         for i = 1  , #idplayer do
             if check[id] ~= nil then
         
@@ -449,10 +465,10 @@ function checkall()
                 end
                     index = index + 1
                 end
-        id = id + 1 
+            id = id + 1 
         end
 
-        ii = 1
+            ii = 1
         for i = 1, #idplayer do
          --   print(warn2[i])
                 if warn2[i] == nil then
@@ -466,7 +482,7 @@ function checkall()
                     textID = sampCreate3dText('WARN2', -1, 0, 0, -1.1, 800.0, true, warn2[i], 0)
                      
                 end
-           end
+        end
 
            
           
@@ -479,21 +495,31 @@ function checkall()
     end)
 end
 
-
-
-
-
-
-
-
-
-    function list(agr)
+function list(agr)
     main_window_state.v = not main_window_state.v -- переключаем статус активности окна, не забываем про .v
     
-    end
+end
    
 
-    function list2(agr)
-        sec_window_state.v = not sec_window_state.v -- переключаем статус активности окна, не забываем про .v
-        imgui.Process = sec_window_state.v
-    end
+function list2(agr)
+    sec_window_state.v = not sec_window_state.v -- переключаем статус активности окна, не забываем про .v
+    imgui.Process = sec_window_state.v
+end
+
+function list2(agr)
+    sec_window_state.v = not sec_window_state.v -- переключаем статус активности окна, не забываем про .v
+    imgui.Process = sec_window_state.v
+end
+
+function alloff(agr)
+
+    activiti = false
+    sampAddChatMessage(u8:decode('Активация на "X" Выключена'), -1)
+
+end
+
+function allon(agr)
+
+    activiti = true
+    sampAddChatMessage(u8:decode('Активация на "X" Включена'), -1)
+end
