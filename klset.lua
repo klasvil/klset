@@ -15,7 +15,7 @@ local key = require 'vkeys'
  
 
 update_state = false
-activiti = true
+activiti = false
 index = 1
 lock = false
 idplayer = {}
